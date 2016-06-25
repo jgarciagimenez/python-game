@@ -4,6 +4,7 @@
 import pygame
 import pygame.transform
 import sys
+import random
 
 from pygame.locals import *
 
@@ -14,15 +15,21 @@ def main():
     Reloj= pygame.time.Clock()
 
     Ventana = pygame.display.set_mode((1400, 720))
-    pygame.display.set_caption("Monigotillo animado")
 
+    pygame.display.set_caption("juego")
     Fondo = pygame.image.load("fondo.jpg")
-
     Imagen = pygame.image.load("monigotillo.png")
+
     transparente = Imagen.get_at((0, 0))
     Imagen.set_colorkey(transparente)
 
     MiMonigotillo = Monigotillo((300, 200), Imagen)
+
+    Monedas = []
+    # Array de monedas
+    for i in range (4):
+    	coor_random = (random.randint(50,1350),random.randint(50,670))
+    	Monedas.append(Moneda(coor_random))
 
     coordX = 300
     coordY = 200
@@ -39,8 +46,14 @@ def main():
 
         MiMonigotillo.update(Coordenadas,direccion,movimiento)
 
-        Ventana.blit(Fondo, (0, 0))
+        for moneda in Monedas:
+        	moneda.update()
+
+        Ventana.blit(pygame.transform.scale(Fondo,(1400,720)),(0,0))
         Ventana.blit(MiMonigotillo.image, MiMonigotillo.rect)
+
+        for moneda in Monedas:
+        	Ventana.blit(moneda.image,moneda.rect)
 
         pygame.display.flip()
 
@@ -145,6 +158,35 @@ class Monigotillo(pygame.sprite.Sprite):
                 self.image = self.arrayAnim_izquierda[self.anim]
 
             self.actualizado= pygame.time.get_ticks()
+
+class Moneda(pygame.sprite.Sprite):
+
+	def __init__(self, coordenadas):
+		pygame.sprite.Sprite.__init__(self)
+
+		self.arrayAnim = []
+
+		for i in range(1,7):
+			self.arrayAnim.append(pygame.image.load("Coin"+str(i)+".png"))
+
+		self.anim= 0
+
+		self.actualizado = pygame.time.get_ticks()
+		self.image = self.arrayAnim[self.anim]
+		self.rect = self.image.get_rect()
+		self.rect.center = coordenadas	
+
+	def update(self):
+
+		if self.actualizado + 70 < pygame.time.get_ticks():
+			self.anim= self.anim + 1
+			if self.anim > 5:
+				self.anim= 0
+
+			self.image = self.arrayAnim[self.anim]
+
+			self.actualizado= pygame.time.get_ticks()
+
 
 
 main()
