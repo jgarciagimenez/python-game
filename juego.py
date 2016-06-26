@@ -28,14 +28,14 @@ def main():
 	Monedas = []
 
 # Array de monedas
-	for i in range (4):
+	for i in range (2):
 		coor_random = (random.randint(50,1350),random.randint(50,670))
 		Monedas.append(Moneda(coor_random))
 # Array de monstruos
 
 	Slimes = []
 
-	for i in range(4):
+	for i in range(3):
 		coor_random = (random.randint(50,1350),random.randint(50,670))
 		Slimes.append(Slime(coor_random))
 
@@ -73,8 +73,33 @@ def main():
 
 
 		for moneda in Monedas:
-			if(pygame.sprite.collide_rect(moneda,MiMonigotillo)):
+			if (pygame.sprite.collide_rect(moneda,MiMonigotillo)):
 				Monedas.remove(moneda)
+				if not Monedas:
+
+					Fuente= pygame.font.Font(None, 100)
+					Texto = Fuente.render("Congratulations!", True, (204,204,0))
+					Ventana.blit(Texto, (360, 270))
+					pygame.display.flip()
+					Texto2 = Fuente.render("Space bar to retry", True, (204,204,0))
+					Ventana.blit(Texto2, (350, 370))
+					pygame.display.flip()
+				
+					win()
+
+		for slime in Slimes:
+			if (pygame.sprite.collide_rect(slime,MiMonigotillo)):
+				Fuente= pygame.font.Font(None, 100)
+				Texto = Fuente.render("Game Over", True, (153,0,0))
+				Ventana.blit(Texto, (430, 270))
+				pygame.display.flip()
+				pygame.time.wait(1400)
+				Texto2 = Fuente.render("Space bar to retry", True, (153,0,0))
+				Ventana.blit(Texto2, (330, 370))
+				pygame.display.flip()
+				pygame.time.wait(1400)
+				# Si pulsamos barra espaciadora reiniciamos el blucle
+				gameover()
 
 
 		for evento in pygame.event.get():
@@ -256,6 +281,43 @@ class Slime(pygame.sprite.Sprite):
 			self.x = self.x + self.incrementoX 
 			self.y = self.y + self.incrementoY
 
+			if self.x > 1400 or self.x < 0 and self.mismadirec % 3 == 0 :
+				self.incrementoX = self.incrementoX * (-1)
+				self.mismadirec = 0
 
+			if self.y > 720 or self.y < 0 and self.mismadirec % 3 == 0 :
+				self.incrementoY = self.incrementoY * (-1)
+				self.mismadirec = 0
 
+def gameover():
+
+	pygame.event.clear()
+	while True:
+		evento = pygame.event.wait()
+
+		if evento.type == pygame.QUIT:
+			sys.exit()
+
+		if evento.type == pygame.KEYDOWN:
+			if evento.key == pygame.K_ESCAPE :
+				sys.exit()
+
+			if evento.key == pygame.K_SPACE :
+				main()
+
+def win():
+
+	pygame.event.clear()
+	while True:
+		evento = pygame.event.wait()
+
+		if evento.type == pygame.QUIT:
+			sys.exit()
+
+		if evento.type == pygame.KEYDOWN:
+			if evento.key == pygame.K_ESCAPE :
+				sys.exit()
+
+			if evento.key == pygame.K_SPACE :
+				main()
 main()
