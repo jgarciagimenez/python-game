@@ -27,6 +27,8 @@ def main():
 
 	Monedas = []
 
+	Puntuacion = 0
+
 # Array de monedas
 	for i in range (2):
 		coor_random = (random.randint(50,1350),random.randint(50,670))
@@ -48,7 +50,8 @@ def main():
 
 	movimiento = False
 	direccion = 'Abajo'
-
+	
+	start_ticks=pygame.time.get_ticks()
 
 	while True:
 
@@ -75,14 +78,15 @@ def main():
 		for moneda in Monedas:
 			if (pygame.sprite.collide_rect(moneda,MiMonigotillo)):
 				Monedas.remove(moneda)
+				Puntuacion = Puntuacion + 100
 				if not Monedas:
 
 					Fuente= pygame.font.Font(None, 100)
 					Texto = Fuente.render("Congratulations!", True, (204,204,0))
-					Ventana.blit(Texto, (360, 270))
+					Ventana.blit(Texto, (375, 270))
 					pygame.display.flip()
-					Texto2 = Fuente.render("Space bar to retry", True, (204,204,0))
-					Ventana.blit(Texto2, (350, 370))
+					Texto2 = Fuente.render("Space bar to play again", True, (204,204,0))
+					Ventana.blit(Texto2, (320, 370))
 					pygame.display.flip()
 				
 					win()
@@ -139,7 +143,18 @@ def main():
 
 		Coordenadas = (coordX, coordY)
 
-		Reloj.tick(30)
+		Reloj.tick(50)
+		now_ticks = pygame.time.get_ticks()
+		sec_passed = 20 - (now_ticks-start_ticks)/1000
+		dec_sec_passed = 100 - (now_ticks-start_ticks)%100
+
+
+		Fuente = pygame.font.Font(None,30)
+		Texto = Fuente.render(str(sec_passed) +':'+ str(dec_sec_passed), True, (255,255,255))
+		Ventana.blit(Texto, (0, 0))
+		Texto2 = Fuente.render("SCORE: "+str(Puntuacion),True,(255,255,255))
+		Ventana.blit(Texto2,(1230,10))
+		pygame.display.flip()
 
 
 class Monigotillo(pygame.sprite.Sprite):
