@@ -30,14 +30,14 @@ def main():
 	Puntuacion = 0
 
 # Array de monedas
-	for i in range (2):
+	for i in range (10):
 		coor_random = (random.randint(50,1350),random.randint(50,670))
 		Monedas.append(Moneda(coor_random))
 # Array de monstruos
 
 	Slimes = []
 
-	for i in range(3):
+	for i in range(5):
 		coor_random = (random.randint(50,1350),random.randint(50,670))
 		Slimes.append(Slime(coor_random))
 
@@ -81,10 +81,16 @@ def main():
 				Puntuacion = Puntuacion + 100
 				if not Monedas:
 
+					now_ticks = pygame.time.get_ticks()
+					sec_passed = (now_ticks-start_ticks)/1000
+
+					Puntuacion = Puntuacion + sec_passed*100
+
 					Fuente= pygame.font.Font(None, 100)
 					Texto = Fuente.render("Congratulations!", True, (204,204,0))
-					Ventana.blit(Texto, (375, 270))
-					pygame.display.flip()
+					Ventana.blit(Texto, (375, 200))
+					Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (204,204,0))
+					Ventana.blit(Texto_puntuacion, (500, 300))
 					Texto2 = Fuente.render("Space bar to play again", True, (204,204,0))
 					Ventana.blit(Texto2, (320, 370))
 					pygame.display.flip()
@@ -95,13 +101,12 @@ def main():
 			if (pygame.sprite.collide_rect(slime,MiMonigotillo)):
 				Fuente= pygame.font.Font(None, 100)
 				Texto = Fuente.render("Game Over", True, (153,0,0))
-				Ventana.blit(Texto, (430, 270))
-				pygame.display.flip()
-				pygame.time.wait(1400)
+				Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (153,0,0))
+				Ventana.blit(Texto, (430, 200))
+				Ventana.blit(Texto_puntuacion, (430, 300))
 				Texto2 = Fuente.render("Space bar to retry", True, (153,0,0))
-				Ventana.blit(Texto2, (330, 370))
+				Ventana.blit(Texto2, (330, 400))
 				pygame.display.flip()
-				pygame.time.wait(1400)
 				# Si pulsamos barra espaciadora reiniciamos el blucle
 				gameover()
 
@@ -145,17 +150,30 @@ def main():
 
 		Reloj.tick(50)
 		now_ticks = pygame.time.get_ticks()
-		sec_passed = 20 - (now_ticks-start_ticks)/1000
-		dec_sec_passed = 100 - (now_ticks-start_ticks)%100
+		sec_passed = 19 - (now_ticks-start_ticks)/1000
+		dec_sec_passed = 1000 - (now_ticks-start_ticks)%1000
 
 
 		Fuente = pygame.font.Font(None,30)
-		Texto = Fuente.render(str(sec_passed) +':'+ str(dec_sec_passed), True, (255,255,255))
+		Texto = Fuente.render(str(sec_passed) +':'+ str(dec_sec_passed)[:2], True, (255,255,255))
 		Ventana.blit(Texto, (0, 0))
 		Texto2 = Fuente.render("SCORE: "+str(Puntuacion),True,(255,255,255))
 		Ventana.blit(Texto2,(1230,10))
 		pygame.display.flip()
 
+		if (20.0 - (now_ticks-start_ticks)/1000.0) < 0.1:
+
+
+			Fuente= pygame.font.Font(None, 100)
+			Texto = Fuente.render("Congratulations!", True, (204,204,0))
+			Ventana.blit(Texto, (375, 200))
+			Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (204,204,0))
+			Ventana.blit(Texto_puntuacion, (500, 300))
+			Texto2 = Fuente.render("Space bar to play again", True, (204,204,0))
+			Ventana.blit(Texto2, (320, 370))
+			pygame.display.flip()
+		
+			win()
 
 class Monigotillo(pygame.sprite.Sprite):
 
