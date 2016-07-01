@@ -20,11 +20,14 @@ def nivel1():
 	pygame.display.set_caption("juego")
 	Fondo = pygame.image.load("Fondo.jpg")
 	Imagen = pygame.image.load("player_mage_sheet.png")
+	Corazon = pygame.image.load("heart.png")
+
 
 	transparente = Imagen.get_at((0, 0))
 	Imagen.set_colorkey(transparente)
 
 	MiMonigotillo = Monigotillo((300, 200), Imagen)
+
 
 	#Monedas = []
 
@@ -90,6 +93,7 @@ def nivel1():
 
 		Ventana.blit(pygame.transform.scale(Fondo,(1400,720)),(0,0))
 		Ventana.blit(MiMonigotillo.image, MiMonigotillo.rect)
+		Ventana.blit(Corazon,(1280,15))
 
 		# for moneda in Monedas:
 		# 	Ventana.blit(moneda.image,moneda.rect)
@@ -102,6 +106,22 @@ def nivel1():
 
 		for attack in slime_Attacks:
 			Ventana.blit(attack.image,attack.rect)
+			if (pygame.sprite.collide_rect(attack,MiMonigotillo)):
+				MiMonigotillo.Vidas -= 1
+				slime_Attacks.remove(attack)
+
+				if MiMonigotillo.Vidas == 0:
+					Fuente= pygame.font.Font(None, 100)
+					Texto = Fuente.render("Game Over", True, (153,0,0))
+					#Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (153,0,0))
+					#Ventana.blit(Texto, (430, 200))
+					#Ventana.blit(Texto_puntuacion, (430, 300))
+					Texto2 = Fuente.render("Space bar to retry", True, (153,0,0))
+					Ventana.blit(Texto2, (330, 400))
+					pygame.display.flip()
+					# Si pulsamos barra espaciadora reiniciamos el blucle
+					gameover()
+
 
 		pygame.display.flip()
 
@@ -138,16 +158,19 @@ def nivel1():
 
 
 			if (pygame.sprite.collide_rect(slime,MiMonigotillo)):
-				Fuente= pygame.font.Font(None, 100)
-				Texto = Fuente.render("Game Over", True, (153,0,0))
-				#Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (153,0,0))
-				Ventana.blit(Texto, (430, 200))
-				Ventana.blit(Texto_puntuacion, (430, 300))
-				Texto2 = Fuente.render("Space bar to retry", True, (153,0,0))
-				Ventana.blit(Texto2, (330, 400))
-				pygame.display.flip()
-				# Si pulsamos barra espaciadora reiniciamos el blucle
-				gameover()
+
+				MiMonigotillo.Vidas -= 1
+				if MiMonigotillo.Vidas == 0:
+					Fuente= pygame.font.Font(None, 100)
+					Texto = Fuente.render("Game Over", True, (153,0,0))
+					#Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (153,0,0))
+					#Ventana.blit(Texto, (430, 200))
+					#Ventana.blit(Texto_puntuacion, (430, 300))
+					Texto2 = Fuente.render("Space bar to retry", True, (153,0,0))
+					Ventana.blit(Texto2, (330, 400))
+					pygame.display.flip()
+					# Si pulsamos barra espaciadora reiniciamos el blucle
+					gameover()
 
 
 		for evento in pygame.event.get():
@@ -215,12 +238,12 @@ def nivel1():
 		# dec_sec_passed = 1000 - (now_ticks-start_ticks)%1000
 
 
-		# Fuente = pygame.font.Font(None,30)
+		Fuente = pygame.font.Font(None,40)
 		# Texto = Fuente.render(str(sec_passed) +':'+ str(dec_sec_passed)[:2], True, (255,255,255))
 		# Ventana.blit(Texto, (0, 0))
-		# Texto2 = Fuente.render("SCORE: "+str(Puntuacion),True,(255,255,255))
-		# Ventana.blit(Texto2,(1230,10))
-		# pygame.display.flip()
+		Texto2 = Fuente.render(": "+str(MiMonigotillo.Vidas),True,(255,255,255))
+		Ventana.blit(Texto2,(1330,25))
+		pygame.display.flip()
 
 		# if (24.8 - (now_ticks-start_ticks)/1000.0) < 0.0:
 
@@ -383,6 +406,7 @@ class Monigotillo(pygame.sprite.Sprite):
 
 		self.ImgCompleta = imagen
 		self.CanAttack = 0
+		self.Vidas = 3
 
 		a=0
 		arrayAnimDerecha = []
@@ -675,7 +699,7 @@ def gameover():
 				sys.exit()
 
 			if evento.key == pygame.K_SPACE :
-				main()
+				nivel1()
 
 def win():
 
@@ -692,7 +716,7 @@ def win():
 				sys.exit()
 
 			if evento.key == pygame.K_SPACE :
-				main()
+				nivel1()
 
 def angulo_polares(a):
 
