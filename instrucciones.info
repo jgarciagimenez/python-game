@@ -1,0 +1,16 @@
+Un pequeño juego para probar la libreria pygame.
+
+El juego consiste en recoger todas las monedas que puedas antes de que se acabe el tiempo
+esquivando los enemigos. Si los enemigos te tocan, mueres directamente y da la opcion de 
+empezar una nueva partida.
+
+Cada moneda da 100 puntos, y si recogemos todas las monedas, cada segudo que nos haya sobrado
+sumara 100 puntos a la puntuacion.
+
+En la parte superior de la pantalla podemos ver el tiempo que nos queda y la puntacion actual.
+Las monedas y los enemigos aparecen en una posicion aleatoria del mapa, asi como el movimiento
+de los enemigos tamibien es pseudoaleatorio, teniendo en cuenta que cuando chocan con uno de los
+bordes fuezo unos pocos movimientos hacia el lado contrario para que no este continuamente chocando.
+
+He incluido una mecanica que consiste en que los enemigos no se mueven si tu no te mueves, de 
+esta forma el usuario puede parase para pensar, pero el tiempo sigue corriendo.

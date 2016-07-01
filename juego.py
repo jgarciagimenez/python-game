@@ -18,7 +18,7 @@ def main():
 
 	pygame.display.set_caption("juego")
 	Fondo = pygame.image.load("fondo.jpg")
-	Imagen = pygame.image.load("monigotillo.png")
+	Imagen = pygame.image.load("player_mage_sheet.png")
 
 	transparente = Imagen.get_at((0, 0))
 	Imagen.set_colorkey(transparente)
@@ -37,7 +37,7 @@ def main():
 
 	Slimes = []
 
-	for i in range(5):
+	for i in range(1):
 		coor_random = (random.randint(50,1350),random.randint(50,670))
 		Slimes.append(Slime(coor_random))
 
@@ -150,7 +150,7 @@ def main():
 
 		Reloj.tick(50)
 		now_ticks = pygame.time.get_ticks()
-		sec_passed = 19 - (now_ticks-start_ticks)/1000
+		sec_passed = 24 - (now_ticks-start_ticks)/1000
 		dec_sec_passed = 1000 - (now_ticks-start_ticks)%1000
 
 
@@ -161,7 +161,7 @@ def main():
 		Ventana.blit(Texto2,(1230,10))
 		pygame.display.flip()
 
-		if (20.0 - (now_ticks-start_ticks)/1000.0) < 0.1:
+		if (24.8 - (now_ticks-start_ticks)/1000.0) < 0.0:
 
 
 			Fuente= pygame.font.Font(None, 100)
@@ -194,18 +194,11 @@ class Monigotillo(pygame.sprite.Sprite):
 		self.arrayAnim_arriba = []
 
 
-		while a < 6:
-			arrayAnimDerecha.append(self.ImgCompleta.subsurface((a*32,160,32,64)))
-			arrayAnimAbajo.append(self.ImgCompleta.subsurface((a*32,100,32,64)))
-			arrayAnimArriba.append(self.ImgCompleta.subsurface((a*32,32,32,64)))
-			a= a + 1
-
-		orden = [3,2,1,3,4,5]
-		for i in orden:
-			self.arrayAnim_abajo.append(arrayAnimAbajo[i])
-			self.arrayAnim_arriba.append(arrayAnimArriba[i])
-			self.arrayAnim_derecha.append(arrayAnimDerecha[i])
-			self.arrayAnim_izquierda.append(pygame.transform.flip(arrayAnimDerecha[i],True,False))
+		for a in range(10):
+			self.arrayAnim_derecha.append(self.ImgCompleta.subsurface((a*32,515,32,64)))
+			self.arrayAnim_abajo.append(self.ImgCompleta.subsurface((a*32,375,32,64)))
+			self.arrayAnim_arriba.append(self.ImgCompleta.subsurface((a*32,300,32,64)))
+			self.arrayAnim_izquierda.append(self.ImgCompleta.subsurface((a*32,440,32,64)))
 
 
 		self.anim= 0
@@ -220,7 +213,7 @@ class Monigotillo(pygame.sprite.Sprite):
 		self.rect.center = nuevas_coordenadas
 		if self.actualizado + 100 < pygame.time.get_ticks() and movimiento:
 			self.anim= self.anim + 1
-			if self.anim > 5:
+			if self.anim > 9:
 				self.anim= 0
 
 			if direccion == 'Abajo':
@@ -341,6 +334,7 @@ def gameover():
 def win():
 
 	pygame.event.clear()
+
 	while True:
 		evento = pygame.event.wait()
 
@@ -353,4 +347,29 @@ def win():
 
 			if evento.key == pygame.K_SPACE :
 				main()
+
+def name():
+	pygame.init()
+	screen = pygame.display.set_mode((480, 360))
+	name = ""
+	font = pygame.font.Font(None, 50)
+	while True:
+		for evt in pygame.event.get():
+			if evt.type == KEYDOWN:
+				if evt.unicode.isalpha():
+					name += evt.unicode
+				elif evt.key == K_BACKSPACE:
+					name = name[:-1]
+				elif evt.key == K_RETURN:
+					name = ""
+			elif evt.type == QUIT:
+				return
+		screen.fill((0, 0, 0))
+		block = font.render(name, True, (255, 255, 255))
+		rect = block.get_rect()
+		rect.center = screen.get_rect().center
+		screen.blit(block, rect)
+		pygame.display.flip()
+
+
 main()
