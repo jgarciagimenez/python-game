@@ -8,6 +8,8 @@ import random
 import math
 
 from pygame.locals import *
+Vidas = 3
+Puntuacion = 0
 
 def nivel1():
 
@@ -26,18 +28,11 @@ def nivel1():
 	transparente = Imagen.get_at((0, 0))
 	Imagen.set_colorkey(transparente)
 
-	MiMonigotillo = Monigotillo((300, 200), Imagen)
+	MiMonigotillo = Monigotillo((100, 360), Imagen)
 
+	global Puntuacion
+	global Vidas
 
-	#Monedas = []
-
-	#Puntuacion = 0
-
-	# # Array de monedas
-	# 	for i in range (5):
-	# 		coor_random = (random.randint(50,1350),random.randint(50,670))
-	# 		Monedas.append(Moneda(coor_random))
-	# Array de monstruos
 
 	Slimes = []
 
@@ -52,8 +47,8 @@ def nivel1():
 	
 	slime_Attacks = []
 
-	coordX = 300
-	coordY = 200
+	coordX = 100
+	coordY = 360
 	Coordenadas = (coordX, coordY)
 
 	incrementoX = 0
@@ -70,9 +65,6 @@ def nivel1():
 
 		now_ticks = pygame.time.get_ticks()
 		MiMonigotillo.update(Coordenadas,direccion,movimiento)
-
-		# for moneda in Monedas:
-		# 	moneda.update()
 
 		for attack in Attacks:
 			attack.update(movimiento)
@@ -95,9 +87,6 @@ def nivel1():
 		Ventana.blit(MiMonigotillo.image, MiMonigotillo.rect)
 		Ventana.blit(Corazon,(1280,15))
 
-		# for moneda in Monedas:
-		# 	Ventana.blit(moneda.image,moneda.rect)
-
 		for slime in Slimes:
 			Ventana.blit(slime.image,slime.rect)
 
@@ -107,15 +96,12 @@ def nivel1():
 		for attack in slime_Attacks:
 			Ventana.blit(attack.image,attack.rect)
 			if (pygame.sprite.collide_rect(attack,MiMonigotillo)):
-				MiMonigotillo.Vidas -= 1
+				Vidas -= 1
 				slime_Attacks.remove(attack)
 
-				if MiMonigotillo.Vidas == 0:
+				if  Vidas == 0:
 					Fuente= pygame.font.Font(None, 100)
 					Texto = Fuente.render("Game Over", True, (153,0,0))
-					#Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (153,0,0))
-					#Ventana.blit(Texto, (430, 200))
-					#Ventana.blit(Texto_puntuacion, (430, 300))
 					Texto2 = Fuente.render("Space bar to retry", True, (153,0,0))
 					Ventana.blit(Texto2, (330, 400))
 					pygame.display.flip()
@@ -155,18 +141,29 @@ def nivel1():
 					slime.vidas -= 1
 					if slime.vidas == 0:
 						Slimes.remove(slime)
+						if not Slimes:
+							Fuente= pygame.font.Font(None, 100)
+							Texto = Fuente.render("Congratulations!", True, (204,204,0))
+		 					Ventana.blit(Texto, (375, 200))
+		 					pygame.display.flip()
+		 					Texto2 = Fuente.render("Return to next level", True, (204,204,0))
+		 			  		Ventana.blit(Texto2, (320, 370))
+		 			  		pygame.display.flip()
+
+		 					now_ticks = pygame.time.get_ticks()
+							sec_passed = (now_ticks-start_ticks)/1000
+		 					Puntuacion += Puntuacion + (50-sec_passed)*100
+
+		 			  		lvl1to2()
 
 
 			if (pygame.sprite.collide_rect(slime,MiMonigotillo)):
 
-				MiMonigotillo.Vidas -= 1
-				if MiMonigotillo.Vidas == 0:
+				Vidas -= 1
+				if Vidas == 0:
 					Fuente= pygame.font.Font(None, 100)
 					Texto = Fuente.render("Game Over", True, (153,0,0))
-					#Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (153,0,0))
-					#Ventana.blit(Texto, (430, 200))
-					#Ventana.blit(Texto_puntuacion, (430, 300))
-					Texto2 = Fuente.render("Space bar to retry", True, (153,0,0))
+					Texto2 = Fuente.render("Return bar to retry", True, (153,0,0))
 					Ventana.blit(Texto2, (330, 400))
 					pygame.display.flip()
 					# Si pulsamos barra espaciadora reiniciamos el blucle
@@ -233,34 +230,23 @@ def nivel1():
 		Coordenadas = (coordX, coordY)
 
 		Reloj.tick(50)
-		# now_ticks = pygame.time.get_ticks()
-		# sec_passed = 24 - (now_ticks-start_ticks)/1000
-		# dec_sec_passed = 1000 - (now_ticks-start_ticks)%1000
+		now_ticks = pygame.time.get_ticks()
+		sec_passed = (now_ticks-start_ticks)/1000
+		dec_sec_passed = now_ticks-start_ticks%1000
 
 
 		Fuente = pygame.font.Font(None,40)
-		# Texto = Fuente.render(str(sec_passed) +':'+ str(dec_sec_passed)[:2], True, (255,255,255))
-		# Ventana.blit(Texto, (0, 0))
-		Texto2 = Fuente.render(": "+str(MiMonigotillo.Vidas),True,(255,255,255))
+		Texto = Fuente.render(str(sec_passed) +':'+ str(dec_sec_passed)[:2], True, (255,255,255))
+		Ventana.blit(Texto, (30, 10))
+		Texto2 = Fuente.render(": "+str(Vidas),True,(255,255,255))
 		Ventana.blit(Texto2,(1330,25))
 		pygame.display.flip()
-
-		# if (24.8 - (now_ticks-start_ticks)/1000.0) < 0.0:
-
-
-		# 	Fuente= pygame.font.Font(None, 100)
-		# 	Texto = Fuente.render("Congratulations!", True, (204,204,0))
-		# 	Ventana.blit(Texto, (375, 200))
-		# 	Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (204,204,0))
-		# 	Ventana.blit(Texto_puntuacion, (500, 300))
-		# 	Texto2 = Fuente.render("Space bar to play again", True, (204,204,0))
-		# 	Ventana.blit(Texto2, (320, 370))
-		# 	pygame.display.flip()
 		
-		# 	win()
-
 
 def nivel2():
+
+	global Vidas
+	global Puntuacion
 
 	pygame.init()
 
@@ -271,11 +257,13 @@ def nivel2():
 	pygame.display.set_caption("juego")
 	Fondo = pygame.image.load("Fondo.jpg")
 	Imagen = pygame.image.load("player_mage_sheet.png")
+	Corazon = pygame.image.load("heart.png")
 
 	transparente = Imagen.get_at((0, 0))
 	Imagen.set_colorkey(transparente)
 
-	MiMonigotillo = Monigotillo((700, 50), Imagen)
+	MiMonigotillo = Monigotillo((700, 600), Imagen)
+	MiBoss = Boss((700,120))
 
 	# Array para ataques
 	Attacks = []
@@ -284,8 +272,8 @@ def nivel2():
 	
 	Boss_Attacks = []
 
-	coordX = 0
-	coordY = 340
+	coordX = 700
+	coordY = 600
 	Coordenadas = (coordX, coordY)
 
 	incrementoX = 0
@@ -302,16 +290,41 @@ def nivel2():
 
 		now_ticks = pygame.time.get_ticks()
 		MiMonigotillo.update(Coordenadas,direccion,movimiento)
+		MiBoss.update(movimiento)
+
+		if MiBoss.CanAttack > 70:
+		 	MiBoss.CanAttack = 0
+		 	Boss_Attacks.append( boss_attack_1((MiBoss.x,MiBoss.y),Coordenadas))
 
 
 		for attack in Attacks:
 			attack.update(movimiento)
-			if attack.x > 1400 or attack.x < 0 or attack.y > 720 or attack.x < 0:
-				Attacks.remove(attack)
 
-			if slime.CanAttack > 30: #################
-				slime.CanAttack = 0
-				Boss_Attacks.append( boss_attack_1((slime.x,slime.y),(Coordenadas)))
+			if (pygame.sprite.collide_rect(MiBoss,attack)):
+				Attacks.remove(attack)
+				MiBoss.vidas -= 1
+
+				if MiBoss.vidas ==0:
+					now_ticks = pygame.time.get_ticks()
+					sec_passed = (now_ticks-start_ticks)/1000
+					Puntuacion += Puntuacion + (100-sec_passed)*100
+
+					Fuente= pygame.font.Font(None, 100)
+					Texto = Fuente.render("Congratulations!", True, (204,204,0))
+					Ventana.blit(Texto, (375, 200))
+					pygame.display.flip()
+					Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (204,204,0))
+					Ventana.blit(Texto_puntuacion, (500, 300))
+					Texto2 = Fuente.render("Return to play again", True, (204,204,0))
+					Ventana.blit(Texto2, (320, 370))
+					pygame.display.flip()
+
+					win()
+
+
+		 	if attack.x > 1400 or attack.x < 0 or attack.y > 720 or attack.x < 0:
+		 		Attacks.remove(attack)
+
 
 		for attack in Boss_Attacks:
 			for ball in attack:
@@ -325,6 +338,8 @@ def nivel2():
 
 		Ventana.blit(pygame.transform.scale(Fondo,(1400,720)),(0,0))
 		Ventana.blit(MiMonigotillo.image, MiMonigotillo.rect)
+		Ventana.blit(MiBoss.image,MiBoss.rect)
+		Ventana.blit(Corazon,(1280,15))
 
 
 		for attack in Attacks:
@@ -398,6 +413,17 @@ def nivel2():
 
 		Reloj.tick(50)
 
+		now_ticks = pygame.time.get_ticks()
+		sec_passed = (now_ticks-start_ticks)/1000
+		dec_sec_passed = now_ticks-start_ticks%1000
+
+		Fuente = pygame.font.Font(None,40)
+		Texto = Fuente.render(str(sec_passed) +':'+ str(dec_sec_passed)[:2], True, (255,255,255))
+		Ventana.blit(Texto, (30, 10))
+		Texto2 = Fuente.render(": "+str(Vidas),True,(255,255,255))
+		Ventana.blit(Texto2,(1330,25))
+		pygame.display.flip()
+
 
 class Monigotillo(pygame.sprite.Sprite):
 
@@ -406,7 +432,6 @@ class Monigotillo(pygame.sprite.Sprite):
 
 		self.ImgCompleta = imagen
 		self.CanAttack = 0
-		self.Vidas = 3
 
 		a=0
 		arrayAnimDerecha = []
@@ -510,7 +535,6 @@ class ranged_attack(pygame.sprite.Sprite):
 				if self.Direccion == "Arriba":
 					self.y -= 10
 
-
 class target_attack (pygame.sprite.Sprite):
 	
 	def __init__(self, coordenadas,target):
@@ -556,8 +580,6 @@ class target_attack (pygame.sprite.Sprite):
 				self.x += int(self.target_x)
 				self.y += int(self.target_y)
 
-
-
 def boss_attack_1(coordenadas,target):
 
 	Attacks = []
@@ -565,16 +587,16 @@ def boss_attack_1(coordenadas,target):
 	## Calculamos el movimiento de cada ataque. Primero el ataque central
 	modulo = dist(coordenadas,target)
 	unidad = (((coordenadas[0] - target[0])*-1/modulo),((coordenadas[1] - target[1])*-1/modulo))
-	central = (unidad[0]*6,unidad[1]*6)
+	central = (unidad[0]*4,unidad[1]*4)
 	
 	Attacks.append(target_attack(coordenadas,central))
 
 
 	angulo = angulo_polares(unidad)
 	
-	for i in [-0.3,0.3,0.10,-0.10,0.15,-0.15]:
+	for i in [0.50,-0.50,0.20,-0.20]:
 	
-			Attacks.append(target_attack(coordenadas,(unidad[0]+math.cos(angulo+i)*6,6*math.sin(angulo+i)+unidad[1])))
+			Attacks.append(target_attack(coordenadas,(unidad[0]+math.cos(angulo+i)*4,4*math.sin(angulo+i)+unidad[1])))
 
 	return Attacks
 
@@ -585,8 +607,7 @@ def slime_attack(coordenadas,target):
 	unidad = (((coordenadas[0] - target[0])*-1/modulo),((coordenadas[1] - target[1])*-1/modulo))
 	attack = (unidad[0]*6,unidad[1]*6)
 
-	return target_attack(coordenadas,attack)
-					
+	return target_attack(coordenadas,attack)			
 
 class Moneda(pygame.sprite.Sprite):
 
@@ -665,6 +686,7 @@ class Slime(pygame.sprite.Sprite):
 
 		if movimiento:
 			
+			self.CanAttack += 1
 			self.x = self.x + self.incrementoX 
 			self.y = self.y + self.incrementoY
 
@@ -676,8 +698,57 @@ class Slime(pygame.sprite.Sprite):
 				self.incrementoY = self.incrementoY * (-1)
 				self.mismadirec = 0
 
-			if movimiento:
-				self.CanAttack += 1
+class Boss(pygame.sprite.Sprite):
+
+	def __init__(self, coordenadas):
+		pygame.sprite.Sprite.__init__(self)
+
+		self.vidas = 4
+
+		self.x = coordenadas[0]
+		self.y = coordenadas[1]
+		self.incrementoX = 2
+		self.CanAttack = 0
+
+		self.arrayAnim = []		
+		
+	##############################################################################	
+	## Thanks to Stephen "Redshrike" Challener for the boss sprite
+	## Check it out at http://opengameart.org/content/harlequin-epicycle-mod
+	##############################################################################
+
+		self.arrayAnim.append(pygame.image.load("archon-1.png"))
+		self.arrayAnim.append(pygame.image.load("archon-2.png"))
+		self.arrayAnim.append(pygame.image.load("archon-3.png"))
+
+		
+		self.anim= 0
+		self.actualizado = pygame.time.get_ticks()
+		self.image = self.arrayAnim[self.anim]
+		self.rect = self.image.get_rect()
+		self.rect.center = coordenadas	
+
+	def update(self, movimiento):
+		self.rect.center = (self.x,self.y)
+
+		if self.actualizado + 170 < pygame.time.get_ticks():
+			self.anim= self.anim + 1
+			if self.anim > 2:
+				self.anim= 0
+
+			self.image = self.arrayAnim[self.anim]
+			self.actualizado= pygame.time.get_ticks()
+
+
+		if movimiento:
+			self.CanAttack += 1
+			
+			self.x += self.incrementoX
+
+			if self.x <= 500 :
+				self.incrementoX = 2
+			if self.x >= 900:
+				self.incrementoX -= 2
 
 def dist (a,b):
 
@@ -698,7 +769,7 @@ def gameover():
 			if evento.key == pygame.K_ESCAPE :
 				sys.exit()
 
-			if evento.key == pygame.K_SPACE :
+			if evento.key == pygame.K_RETURN:
 				nivel1()
 
 def win():
@@ -715,8 +786,25 @@ def win():
 			if evento.key == pygame.K_ESCAPE :
 				sys.exit()
 
-			if evento.key == pygame.K_SPACE :
+			if evento.key == pygame.K_RETURN :
 				nivel1()
+
+def lvl1to2():
+
+	pygame.event.clear()
+
+	while True:
+		evento = pygame.event.wait()
+
+		if evento.type == pygame.QUIT:
+			sys.exit()
+
+		if evento.type == pygame.KEYDOWN:
+			if evento.key == pygame.K_ESCAPE :
+				sys.exit()
+
+			if evento.key == pygame.K_RETURN :
+				nivel2()
 
 def angulo_polares(a):
 
@@ -761,5 +849,4 @@ def name():
 		screen.blit(block, rect)
 		pygame.display.flip()
 
-
-nivel1()
+nivel2()
