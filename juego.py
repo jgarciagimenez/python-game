@@ -330,6 +330,20 @@ def nivel2():
 			for ball in attack:
 				ball.update(movimiento)
 
+				if (pygame.sprite.collide_rect(MiMonigotillo,ball)):
+					attack.remove(ball)
+					Vidas -= 1
+
+					if  Vidas == 0:
+						Fuente= pygame.font.Font(None, 100)
+						Texto = Fuente.render("Game Over", True, (153,0,0))
+						Texto2 = Fuente.render("Return to retry", True, (153,0,0))
+						Ventana.blit(Texto2, (330, 400))
+						pygame.display.flip()
+						# Si pulsamos barra espaciadora reiniciamos el blucle
+						gameover()
+
+
 				if ball.x > 1400 or ball.x < 0 or ball.y > 720 or ball.x < 0:
 					attack.remove(ball)
 			if not attack:
@@ -703,7 +717,7 @@ class Boss(pygame.sprite.Sprite):
 	def __init__(self, coordenadas):
 		pygame.sprite.Sprite.__init__(self)
 
-		self.vidas = 4
+		self.vidas = 10
 
 		self.x = coordenadas[0]
 		self.y = coordenadas[1]
@@ -711,7 +725,7 @@ class Boss(pygame.sprite.Sprite):
 		self.CanAttack = 0
 
 		self.arrayAnim = []		
-		
+
 	##############################################################################	
 	## Thanks to Stephen "Redshrike" Challener for the boss sprite
 	## Check it out at http://opengameart.org/content/harlequin-epicycle-mod
@@ -759,6 +773,9 @@ def dist (a,b):
 def gameover():
 
 	pygame.event.clear()
+	global Vidas
+	Vidas = 3
+
 	while True:
 		evento = pygame.event.wait()
 
@@ -849,4 +866,4 @@ def name():
 		screen.blit(block, rect)
 		pygame.display.flip()
 
-nivel2()
+nivel1()
