@@ -41,6 +41,9 @@ def main():
 		coor_random = (random.randint(50,1350),random.randint(50,670))
 		Slimes.append(Slime(coor_random))
 
+# Array para ataques
+	Attacks = []
+
 	coordX = 300
 	coordY = 200
 	Coordenadas = (coordX, coordY)
@@ -50,6 +53,8 @@ def main():
 
 	movimiento = False
 	direccion = 'Abajo'
+
+
 	
 	start_ticks=pygame.time.get_ticks()
 
@@ -59,6 +64,9 @@ def main():
 
 		for moneda in Monedas:
 			moneda.update()
+
+		for attack in Attacks:
+			attack.update(movimiento)
 
 		for slime in Slimes:
 			slime.update(movimiento)
@@ -71,6 +79,9 @@ def main():
 
 		for slime in Slimes:
 			Ventana.blit(slime.image,slime.rect)
+
+		for attack in Attacks:
+			Ventana.blit(attack.image,attack.rect)
 
 		pygame.display.flip()
 
@@ -138,6 +149,10 @@ def main():
 					movimiento = True
 					direccion = 'Arriba'
 
+				elif evento.key == pygame.K_SPACE:
+					Attacks.append(ranged_attack((coordX,coordY),direccion))
+
+
 			if evento.type == pygame.KEYUP:
 
 				if evento.key == pygame.K_RIGHT:
@@ -152,8 +167,8 @@ def main():
 				elif evento.key == pygame.K_UP:
 					incrementoY += 3
 
-				elif incrementoX == 0 and incrementoY == 0:
-					movimiento = False
+			if incrementoX == 0 and incrementoY == 0:
+				movimiento = False
 
 		coordX = coordX + incrementoX
 		coordY = coordY + incrementoY
@@ -214,7 +229,6 @@ class Monigotillo(pygame.sprite.Sprite):
 
 
 		self.anim= 0
-
 		self.actualizado = pygame.time.get_ticks()
 		self.image = self.arrayAnim_abajo[self.anim]
 		self.rect = self.image.get_rect()
@@ -241,6 +255,60 @@ class Monigotillo(pygame.sprite.Sprite):
 				self.image = self.arrayAnim_izquierda[self.anim]
 
 			self.actualizado= pygame.time.get_ticks()
+
+class ranged_attack(pygame.sprite.Sprite):
+	
+	def __init__(self, coordenadas,direccion):
+		pygame.sprite.Sprite.__init__(self)
+
+		self.x = coordenadas[0]
+		self.y = coordenadas[1]
+		self.Direccion = direccion
+		self.arrayAnim = []
+
+		self.arrayAnim = []
+		imagen = pygame.image.load("ball.png")
+		
+		self.arrayAnim.append(imagen.subsurface((64,64,32,32)))
+		self.arrayAnim.append(imagen.subsurface((64,32,32,32)))
+		self.arrayAnim.append(imagen.subsurface((64,0,32,32)))	
+		self.arrayAnim.append(imagen.subsurface((64,32,32,32)))	
+
+
+		self.anim= 0
+
+		self.actualizado = pygame.time.get_ticks()
+		self.image = self.arrayAnim[self.anim]
+		self.rect = self.image.get_rect()
+		self.rect.center = coordenadas	
+
+	def update(self,movimiento):
+
+			self.rect.center = (self.x,self.y)
+			
+			if self.actualizado + 120 < pygame.time.get_ticks():
+				self.anim= self.anim + 1
+				if self.anim > 3:
+					self.anim= 0
+
+				self.image = self.arrayAnim[self.anim]
+				self.actualizado= pygame.time.get_ticks()
+
+			if movimiento:
+			
+				if self.Direccion == "Derecha":
+					self.x += 10
+
+				if self.Direccion == "Izquierda":
+					self.x -= 10
+
+				if self.Direccion == "Abajo":
+					self.y += 10
+
+				if self.Direccion == "Arriba":
+					self.y -= 10
+
+					
 
 class Moneda(pygame.sprite.Sprite):
 
