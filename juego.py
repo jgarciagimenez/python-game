@@ -119,29 +119,41 @@ def main():
 					sys.exit()
 
 				elif evento.key == pygame.K_RIGHT:
-					incrementoX = 3
+					incrementoX += 3
 					movimiento = True
 					direccion = 'Derecha'
 
 				elif evento.key == pygame.K_DOWN:
-					incrementoY = 3
+					incrementoY += 3
 					movimiento = True
 					direccion = 'Abajo'
 
 				elif evento.key == pygame.K_LEFT:
-					incrementoX = -3
+					incrementoX -= 3
 					movimiento = True
 					direccion = 'Izquierda'
 
 				elif evento.key == pygame.K_UP:
-					incrementoY = -3
+					incrementoY -= 3
 					movimiento = True
 					direccion = 'Arriba'
 
 			if evento.type == pygame.KEYUP:
-				incrementoX = 0
-				incrementoY = 0
-				movimiento = False
+
+				if evento.key == pygame.K_RIGHT:
+					incrementoX -= 3
+
+				elif evento.key == pygame.K_DOWN:
+					incrementoY -= 3
+
+				elif evento.key == pygame.K_LEFT:
+					incrementoX += 3	
+
+				elif evento.key == pygame.K_UP:
+					incrementoY += 3
+
+				elif incrementoX == 0 and incrementoY == 0:
+					movimiento = False
 
 		coordX = coordX + incrementoX
 		coordY = coordY + incrementoY
@@ -149,31 +161,31 @@ def main():
 		Coordenadas = (coordX, coordY)
 
 		Reloj.tick(50)
-		now_ticks = pygame.time.get_ticks()
-		sec_passed = 24 - (now_ticks-start_ticks)/1000
-		dec_sec_passed = 1000 - (now_ticks-start_ticks)%1000
+		# now_ticks = pygame.time.get_ticks()
+		# sec_passed = 24 - (now_ticks-start_ticks)/1000
+		# dec_sec_passed = 1000 - (now_ticks-start_ticks)%1000
 
 
-		Fuente = pygame.font.Font(None,30)
-		Texto = Fuente.render(str(sec_passed) +':'+ str(dec_sec_passed)[:2], True, (255,255,255))
-		Ventana.blit(Texto, (0, 0))
-		Texto2 = Fuente.render("SCORE: "+str(Puntuacion),True,(255,255,255))
-		Ventana.blit(Texto2,(1230,10))
-		pygame.display.flip()
+		# Fuente = pygame.font.Font(None,30)
+		# Texto = Fuente.render(str(sec_passed) +':'+ str(dec_sec_passed)[:2], True, (255,255,255))
+		# Ventana.blit(Texto, (0, 0))
+		# Texto2 = Fuente.render("SCORE: "+str(Puntuacion),True,(255,255,255))
+		# Ventana.blit(Texto2,(1230,10))
+		# pygame.display.flip()
 
-		if (24.8 - (now_ticks-start_ticks)/1000.0) < 0.0:
+		# if (24.8 - (now_ticks-start_ticks)/1000.0) < 0.0:
 
 
-			Fuente= pygame.font.Font(None, 100)
-			Texto = Fuente.render("Congratulations!", True, (204,204,0))
-			Ventana.blit(Texto, (375, 200))
-			Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (204,204,0))
-			Ventana.blit(Texto_puntuacion, (500, 300))
-			Texto2 = Fuente.render("Space bar to play again", True, (204,204,0))
-			Ventana.blit(Texto2, (320, 370))
-			pygame.display.flip()
+		# 	Fuente= pygame.font.Font(None, 100)
+		# 	Texto = Fuente.render("Congratulations!", True, (204,204,0))
+		# 	Ventana.blit(Texto, (375, 200))
+		# 	Texto_puntuacion = Fuente.render( "Score:"+str(Puntuacion), True, (204,204,0))
+		# 	Ventana.blit(Texto_puntuacion, (500, 300))
+		# 	Texto2 = Fuente.render("Space bar to play again", True, (204,204,0))
+		# 	Ventana.blit(Texto2, (320, 370))
+		# 	pygame.display.flip()
 		
-			win()
+		# 	win()
 
 class Monigotillo(pygame.sprite.Sprite):
 
