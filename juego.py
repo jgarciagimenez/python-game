@@ -30,14 +30,14 @@ def main():
 	Puntuacion = 0
 
 # Array de monedas
-	for i in range (10):
+	for i in range (5):
 		coor_random = (random.randint(50,1350),random.randint(50,670))
 		Monedas.append(Moneda(coor_random))
 # Array de monstruos
 
 	Slimes = []
 
-	for i in range(1):
+	for i in range(5):
 		coor_random = (random.randint(50,1350),random.randint(50,670))
 		Slimes.append(Slime(coor_random))
 
@@ -67,6 +67,8 @@ def main():
 
 		for attack in Attacks:
 			attack.update(movimiento)
+			if attack.x > 1400 or attack.x < 0 or attack.y > 720 or attack.x < 0:
+				Attacks.remove(attack)
 
 		for slime in Slimes:
 			slime.update(movimiento)
@@ -109,6 +111,13 @@ def main():
 					win()
 
 		for slime in Slimes:
+			for attack in Attacks:
+				if (pygame.sprite.collide_rect(slime,attack)):
+					Attacks.remove(attack)
+					slime.vidas -= 1
+					if slime.vidas == 0:
+						Slimes.remove(slime)
+
 			if (pygame.sprite.collide_rect(slime,MiMonigotillo)):
 				Fuente= pygame.font.Font(None, 100)
 				Texto = Fuente.render("Game Over", True, (153,0,0))
@@ -150,7 +159,9 @@ def main():
 					direccion = 'Arriba'
 
 				elif evento.key == pygame.K_SPACE:
-					Attacks.append(ranged_attack((coordX,coordY),direccion))
+					if MiMonigotillo.CanAttack > 1:
+						MiMonigotillo.CanAttack = 0
+						Attacks.append(ranged_attack((coordX,coordY),direccion))
 
 
 			if evento.type == pygame.KEYUP:
@@ -167,11 +178,15 @@ def main():
 				elif evento.key == pygame.K_UP:
 					incrementoY += 3
 
-			if incrementoX == 0 and incrementoY == 0:
-				movimiento = False
+				if incrementoX == 0 and incrementoY == 0:
+					movimiento = False
 
-		coordX = coordX + incrementoX
-		coordY = coordY + incrementoY
+
+		if not(coordX >= 1368 and incrementoX > 0) and not(coordX <= 32 and incrementoX < 0) :
+			coordX = coordX + incrementoX
+
+		if not(coordY >= 678 and incrementoY > 0) and not(coordY <= 32 and incrementoY < 0) :
+			coordY = coordY + incrementoY
 
 		Coordenadas = (coordX, coordY)
 
@@ -208,6 +223,7 @@ class Monigotillo(pygame.sprite.Sprite):
 		pygame.sprite.Sprite.__init__(self)
 
 		self.ImgCompleta = imagen
+		self.CanAttack = 0
 
 		a=0
 		arrayAnimDerecha = []
@@ -223,8 +239,8 @@ class Monigotillo(pygame.sprite.Sprite):
 
 		for a in range(10):
 			self.arrayAnim_derecha.append(self.ImgCompleta.subsurface((a*32,515,32,64)))
-			self.arrayAnim_abajo.append(self.ImgCompleta.subsurface((a*32,375,32,64)))
-			self.arrayAnim_arriba.append(self.ImgCompleta.subsurface((a*32,300,32,64)))
+			self.arrayAnim_abajo.append(self.ImgCompleta.subsurface((a*32,365,32,64)))
+			self.arrayAnim_arriba.append(self.ImgCompleta.subsurface((a*32,290,32,64)))
 			self.arrayAnim_izquierda.append(self.ImgCompleta.subsurface((a*32,440,32,64)))
 
 
@@ -237,6 +253,7 @@ class Monigotillo(pygame.sprite.Sprite):
 
 	def update(self, nuevas_coordenadas,direccion,movimiento):
 		self.rect.center = nuevas_coordenadas
+
 		if self.actualizado + 100 < pygame.time.get_ticks() and movimiento:
 			self.anim= self.anim + 1
 			if self.anim > 9:
@@ -255,8 +272,63 @@ class Monigotillo(pygame.sprite.Sprite):
 				self.image = self.arrayAnim_izquierda[self.anim]
 
 			self.actualizado= pygame.time.get_ticks()
+			if movimiento:
+				self.CanAttack += 1
 
 class ranged_attack(pygame.sprite.Sprite):
+	
+	def __init__(self, coordenadas,direccion):
+		pygame.sprite.Sprite.__init__(self)
+
+		self.x = coordenadas[0]
+		self.y = coordenadas[1]
+		self.Direccion = direccion
+		self.arrayAnim = []
+
+		self.arrayAnim = []
+		imagen = pygame.image.load("ball.png")
+		
+		self.arrayAnim.append(imagen.subsurface((64,64,32,32)))
+		self.arrayAnim.append(imagen.subsurface((64,32,32,32)))
+		self.arrayAnim.append(imagen.subsurface((64,0,32,32)))	
+		self.arrayAnim.append(imagen.subsurface((64,32,32,32)))	
+
+
+		self.anim= 0
+
+		self.actualizado = pygame.time.get_ticks()
+		self.image = self.arrayAnim[self.anim]
+		self.rect = self.image.get_rect()
+		self.rect.center = coordenadas	
+
+	def update(self,movimiento):
+
+			self.rect.center = (self.x,self.y)
+			
+			if self.actualizado + 120 < pygame.time.get_ticks():
+				self.anim= self.anim + 1
+				if self.anim > 3:
+					self.anim= 0
+
+				self.image = self.arrayAnim[self.anim]
+				self.actualizado= pygame.time.get_ticks()
+
+			if movimiento:
+			
+				if self.Direccion == "Derecha":
+					self.x += 10
+
+				if self.Direccion == "Izquierda":
+					self.x -= 10
+
+				if self.Direccion == "Abajo":
+					self.y += 10
+
+				if self.Direccion == "Arriba":
+					self.y -= 10
+
+
+class Boss_attack_1(pygame.sprite.Sprite):
 	
 	def __init__(self, coordenadas,direccion):
 		pygame.sprite.Sprite.__init__(self)
@@ -343,6 +415,8 @@ class Slime(pygame.sprite.Sprite):
 	def __init__(self, coordenadas):
 		pygame.sprite.Sprite.__init__(self)
 
+		self.vidas = 3
+
 		self.x = coordenadas[0]
 		self.y = coordenadas[1]
 		self.mismadirec = 0
@@ -351,9 +425,9 @@ class Slime(pygame.sprite.Sprite):
 
 		self.arrayAnim = []
 		imagen = pygame.image.load("slime.png")
-		
-		self.arrayAnim.append(imagen.subsurface((0,32,32,32)))
-		self.arrayAnim.append(imagen.subsurface((32,32,32,32)))
+	
+		self.arrayAnim.append(pygame.transform.scale(imagen.subsurface((0,32,32,32)),(64,64)))
+		self.arrayAnim.append(pygame.transform.scale(imagen.subsurface((32,32,32,32)),(64,64)))
 		
 		self.anim= 0
 		self.actualizado = pygame.time.get_ticks()
