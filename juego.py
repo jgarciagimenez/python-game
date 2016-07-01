@@ -5,6 +5,7 @@ import pygame
 import pygame.transform
 import sys
 import random
+import math
 
 from pygame.locals import *
 
@@ -37,12 +38,16 @@ def main():
 
 	Slimes = []
 
-	for i in range(5):
+	for i in range(1):
 		coor_random = (random.randint(50,1350),random.randint(50,670))
 		Slimes.append(Slime(coor_random))
 
 # Array para ataques
 	Attacks = []
+
+# Array para ataques de boss
+	
+	Boss_Attacks = []
 
 	coordX = 300
 	coordY = 200
@@ -60,6 +65,7 @@ def main():
 
 	while True:
 
+		now_ticks = pygame.time.get_ticks()
 		MiMonigotillo.update(Coordenadas,direccion,movimiento)
 
 		for moneda in Monedas:
@@ -72,6 +78,19 @@ def main():
 
 		for slime in Slimes:
 			slime.update(movimiento)
+			if slime.CanAttack > 50:
+				slime.CanAttack = 0
+				Boss_Attacks.append( boss_attack_1((slime.x,slime.y),(Coordenadas)))
+
+		for attack in Boss_Attacks:
+			for ball in attack:
+				ball.update(movimiento)
+
+				if ball.x > 1400 or ball.x < 0 or ball.y > 720 or ball.x < 0:
+					attack.remove(ball)
+			if not attack:
+				Boss_Attacks.remove(attack)
+
 
 		Ventana.blit(pygame.transform.scale(Fondo,(1400,720)),(0,0))
 		Ventana.blit(MiMonigotillo.image, MiMonigotillo.rect)
@@ -84,6 +103,10 @@ def main():
 
 		for attack in Attacks:
 			Ventana.blit(attack.image,attack.rect)
+
+		for attack in Boss_Attacks:
+			for ball in attack:
+				Ventana.blit(ball.image,ball.rect)
 
 		pygame.display.flip()
 
@@ -117,6 +140,7 @@ def main():
 					slime.vidas -= 1
 					if slime.vidas == 0:
 						Slimes.remove(slime)
+
 
 			if (pygame.sprite.collide_rect(slime,MiMonigotillo)):
 				Fuente= pygame.font.Font(None, 100)
@@ -328,18 +352,19 @@ class ranged_attack(pygame.sprite.Sprite):
 					self.y -= 10
 
 
-class Boss_attack_1(pygame.sprite.Sprite):
+class target_atack (pygame.sprite.Sprite):
 	
-	def __init__(self, coordenadas,direccion):
+	def __init__(self, coordenadas,target):
 		pygame.sprite.Sprite.__init__(self)
 
 		self.x = coordenadas[0]
 		self.y = coordenadas[1]
-		self.Direccion = direccion
+		self.target_x = target[0]
+		self.target_y = target[1]
 		self.arrayAnim = []
 
 		self.arrayAnim = []
-		imagen = pygame.image.load("ball.png")
+		imagen = pygame.image.load("ball2.png")
 		
 		self.arrayAnim.append(imagen.subsurface((64,64,32,32)))
 		self.arrayAnim.append(imagen.subsurface((64,32,32,32)))
@@ -367,18 +392,32 @@ class Boss_attack_1(pygame.sprite.Sprite):
 				self.actualizado= pygame.time.get_ticks()
 
 			if movimiento:
-			
-				if self.Direccion == "Derecha":
-					self.x += 10
+	
 
-				if self.Direccion == "Izquierda":
-					self.x -= 10
+				self.x += int(self.target_x)
+				self.y += int(self.target_y)
 
-				if self.Direccion == "Abajo":
-					self.y += 10
 
-				if self.Direccion == "Arriba":
-					self.y -= 10
+
+def boss_attack_1(coordenadas,target):
+
+	Attacks = []
+
+	## Calculamos el movimiento de cada ataque. Primero el ataque central
+	modulo = dist(coordenadas,target)
+	unidad = (((coordenadas[0] - target[0])*-1/modulo),((coordenadas[1] - target[1])*-1/modulo))
+	central = (unidad[0]*6,unidad[1]*6)
+	
+	Attacks.append(target_atack(coordenadas,central))
+
+
+	angulo = angulo_polares(unidad)
+	
+	for i in [-0.3,0.3,0.10,-0.10,0.15,-0.15]:
+	
+			Attacks.append(target_atack(coordenadas,(unidad[0]+math.cos(angulo+i)*6,6*math.sin(angulo+i)+unidad[1])))
+
+	return Attacks
 
 					
 
@@ -422,6 +461,7 @@ class Slime(pygame.sprite.Sprite):
 		self.mismadirec = 0
 		self.incrementoX = 0
 		self.incrementoY = 0
+		self.CanAttack = 0
 
 		self.arrayAnim = []
 		imagen = pygame.image.load("slime.png")
@@ -461,13 +501,22 @@ class Slime(pygame.sprite.Sprite):
 			self.x = self.x + self.incrementoX 
 			self.y = self.y + self.incrementoY
 
-			if self.x > 1400 or self.x < 0 and self.mismadirec % 3 == 0 :
+			if self.x > 1350 or self.x < 0 and self.mismadirec % 3 == 0 :
 				self.incrementoX = self.incrementoX * (-1)
 				self.mismadirec = 0
 
-			if self.y > 720 or self.y < 0 and self.mismadirec % 3 == 0 :
+			if self.y > 670 or self.y < 0 and self.mismadirec % 3 == 0 :
 				self.incrementoY = self.incrementoY * (-1)
 				self.mismadirec = 0
+
+			if movimiento:
+				self.CanAttack += 1
+
+def dist (a,b):
+
+	suma = (a[0]-b[0])*(a[0]-b[0])
+	suma += (a[1]-b[1])*(a[1]-b[1])
+	return math.sqrt(float(suma))
 
 def gameover():
 
@@ -501,6 +550,26 @@ def win():
 
 			if evento.key == pygame.K_SPACE :
 				main()
+
+def angulo_polares(a):
+
+	x = a[0]
+	y = a[1]
+
+	if x > 0 and y >= 0:
+		return math.atan(y/x)
+
+	if x == 0 and y > 0:
+		return math.pi/2
+
+	if x < 0:
+		return math.atan(y/x)+math.pi
+
+	if x == 0 and y > 0:
+		return math.pi*3/2
+
+	if x > 0 and y < 0:
+		return math.atan(y/x)+2*math.pi
 
 def name():
 	pygame.init()
