@@ -1,0 +1,9 @@
+
+CREATE DATABASE DBjuego;
+
+GRANT ALL ON DBdePeliculas.* TO 'jose'@'localhost' IDENTIFIED BY 'juego';
+
+USE DBjuego;
+
+CREATE TABLE Puntuaciones (id INT, Nombre VARCHAR(255),Puntuacion INT);
+

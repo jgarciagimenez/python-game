@@ -15,9 +15,11 @@ from pygame.locals import *
 
 Vidas = 3
 Puntuacion = 0
+Name = None
 
-def nivel1():
-
+def nivel1(MyName):
+	global Name
+	Name = MyName
 	pygame.init()
 
 	Reloj= pygame.time.Clock()

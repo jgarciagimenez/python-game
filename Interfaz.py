@@ -6,14 +6,12 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import MySQLdb as db
 import juego
-
+Name = None
 
 
 class Handler:
 
 	Builder = None
-	Name = None
-
 
 
 	def __init__(self):
@@ -53,6 +51,7 @@ class Handler:
 		self.about_dialog.hide()
 
 	def on_btn_main_accept_clicked(self,*args):
+		global Name
 		Name = self.entry_name.get_text()
 		self.entry_name.set_text('')
 		self.info_dialog.show()
@@ -62,7 +61,7 @@ class Handler:
 
 	def on_btn_info_comenzar_clicked(self,*args):
 		print "Se lanza el juego"
-		juego.nivel1()
+		juego.nivel1(Name)
 
 	def on_btn_info_cancel_clicked(self,*args):
 		self.info_dialog.hide()
