@@ -104,6 +104,34 @@ def nivel1(MyName):
 		Ventana.blit(MiMonigotillo.image, MiMonigotillo.rect)
 		Ventana.blit(Corazon,(1280,15))
 
+		if not Slimes:
+
+			now_ticks = pygame.time.get_ticks()
+			sec_passed = (now_ticks-start_ticks)/1000
+			dec_sec_passed = now_ticks-start_ticks%1000
+
+
+			Fuente = pygame.font.Font(None,40)
+			Texto = Fuente.render(str(sec_passed) +':'+ str(dec_sec_passed)[:2], True, (255,255,255))
+			Ventana.blit(Texto, (30, 10))
+			Texto2 = Fuente.render(": "+str(Vidas),True,(255,255,255))
+			Ventana.blit(Texto2,(1330,25))
+			pygame.display.flip()	
+
+			Fuente= pygame.font.Font(None, 100)
+			Texto = Fuente.render("Congratulations!", True, (204,204,0))
+			Ventana.blit(Texto, (375, 200))
+			pygame.display.flip()
+			Texto2 = Fuente.render("Return to next level", True, (204,204,0))
+	  		Ventana.blit(Texto2, (320, 370))
+	  		pygame.display.flip()
+
+			now_ticks = pygame.time.get_ticks()
+			sec_passed = (now_ticks-start_ticks)/1000
+			Puntuacion += Puntuacion + (50-sec_passed)*100
+
+		  	lvl1to2()
+
 		for slime in Slimes:
 			Ventana.blit(slime.image,slime.rect)
 
@@ -158,20 +186,7 @@ def nivel1(MyName):
 					slime.vidas -= 1
 					if slime.vidas == 0:
 						Slimes.remove(slime)
-						if not Slimes:
-							Fuente= pygame.font.Font(None, 100)
-							Texto = Fuente.render("Congratulations!", True, (204,204,0))
-		 					Ventana.blit(Texto, (375, 200))
-		 					pygame.display.flip()
-		 					Texto2 = Fuente.render("Return to next level", True, (204,204,0))
-		 			  		Ventana.blit(Texto2, (320, 370))
-		 			  		pygame.display.flip()
 
-		 					now_ticks = pygame.time.get_ticks()
-							sec_passed = (now_ticks-start_ticks)/1000
-		 					Puntuacion += Puntuacion + (50-sec_passed)*100
-
-		 			  		lvl1to2()
 
 
 			if (pygame.sprite.collide_rect(slime,MiMonigotillo)):
@@ -454,7 +469,7 @@ def nivel2():
 		Texto2 = Fuente.render(": "+str(Vidas),True,(255,255,255))
 		Ventana.blit(Texto2,(1330,25))
 		pygame.display.flip()
-		
+
 
 class Monigotillo(pygame.sprite.Sprite):
 
@@ -734,7 +749,7 @@ class Boss(pygame.sprite.Sprite):
 	def __init__(self, coordenadas):
 		pygame.sprite.Sprite.__init__(self)
 
-		self.vidas = 2
+		self.vidas = 10
 
 		self.x = coordenadas[0]
 		self.y = coordenadas[1]
@@ -872,27 +887,4 @@ def saveScore():
 	query = "INSERT INTO Puntuaciones VALUES(" +str(id_actual+1)+",'"+Name+"',"+str(Puntuacion)+");"
 	micursor.execute(query)
 	Conexion.commit()
-
-def name():
-	pygame.init()
-	screen = pygame.display.set_mode((480, 360))
-	name = ""
-	font = pygame.font.Font(None, 50)
-	while True:
-		for evt in pygame.event.get():
-			if evt.type == KEYDOWN:
-				if evt.unicode.isalpha():
-					name += evt.unicode
-				elif evt.key == K_BACKSPACE:
-					name = name[:-1]
-				elif evt.key == K_RETURN:
-					name = ""
-			elif evt.type == QUIT:
-				return
-		screen.fill((0, 0, 0))
-		block = font.render(name, True, (255, 255, 255))
-		rect = block.get_rect()
-		rect.center = screen.get_rect().center
-		screen.blit(block, rect)
-		pygame.display.flip()
 
