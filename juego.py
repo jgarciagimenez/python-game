@@ -257,8 +257,8 @@ def nivel1(MyName):
 		Ventana.blit(Texto, (30, 10))
 		Texto2 = Fuente.render(": "+str(Vidas),True,(255,255,255))
 		Ventana.blit(Texto2,(1330,25))
-		pygame.display.flip()
-		
+		pygame.display.flip()		
+
 
 def nivel2():
 
@@ -454,7 +454,7 @@ def nivel2():
 		Texto2 = Fuente.render(": "+str(Vidas),True,(255,255,255))
 		Ventana.blit(Texto2,(1330,25))
 		pygame.display.flip()
-
+		
 
 class Monigotillo(pygame.sprite.Sprite):
 
@@ -872,7 +872,6 @@ def saveScore():
 	query = "INSERT INTO Puntuaciones VALUES(" +str(id_actual+1)+",'"+Name+"',"+str(Puntuacion)+");"
 	micursor.execute(query)
 	Conexion.commit()
-
 
 def name():
 	pygame.init()
