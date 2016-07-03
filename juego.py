@@ -10,8 +10,17 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import MySQLdb as db
-
 from pygame.locals import *
+
+# Database 
+db_host = "localhost"
+db_user = "jose"
+db_pass = "juego"
+db_data = "DBjuego"
+
+Conexion = db.connect(db_host,db_user,db_pass,db_data)
+micursor = Conexion.cursor(db.cursors.DictCursor)
+
 
 Vidas = 3
 Puntuacion = 0
@@ -725,7 +734,7 @@ class Boss(pygame.sprite.Sprite):
 	def __init__(self, coordenadas):
 		pygame.sprite.Sprite.__init__(self)
 
-		self.vidas = 10
+		self.vidas = 2
 
 		self.x = coordenadas[0]
 		self.y = coordenadas[1]
@@ -800,6 +809,7 @@ def gameover():
 def win():
 
 	pygame.event.clear()
+	saveScore()
 
 	while True:
 		evento = pygame.event.wait()
@@ -812,7 +822,7 @@ def win():
 				sys.exit()
 
 			if evento.key == pygame.K_RETURN :
-				nivel1()
+				nivel1(Name)
 
 def lvl1to2():
 
@@ -850,6 +860,19 @@ def angulo_polares(a):
 
 	if x > 0 and y < 0:
 		return math.atan(y/x)+2*math.pi
+
+def saveScore():
+
+	query = "SELECT MAX(id) FROM Puntuaciones;"
+	micursor.execute(query)
+	registro = micursor.fetchone()
+	Conexion.commit()
+	id_actual = registro['MAX(id)']
+
+	query = "INSERT INTO Puntuaciones VALUES(" +str(id_actual+1)+",'"+Name+"',"+str(Puntuacion)+");"
+	micursor.execute(query)
+	Conexion.commit()
+
 
 def name():
 	pygame.init()
