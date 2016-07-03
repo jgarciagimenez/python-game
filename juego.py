@@ -6,8 +6,13 @@ import pygame.transform
 import sys
 import random
 import math
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+import MySQLdb as db
 
 from pygame.locals import *
+
 Vidas = 3
 Puntuacion = 0
 
@@ -32,6 +37,7 @@ def nivel1():
 
 	global Puntuacion
 	global Vidas
+	Vidas = 3
 
 
 	Slimes = []
@@ -866,4 +872,3 @@ def name():
 		screen.blit(block, rect)
 		pygame.display.flip()
 
-nivel1()

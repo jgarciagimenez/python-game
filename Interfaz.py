@@ -12,6 +12,8 @@ import juego
 class Handler:
 
 	Builder = None
+	Name = None
+
 
 
 	def __init__(self):
@@ -27,11 +29,14 @@ class Handler:
 		self.handlers = { "on_window_destroy": self.on_window_destroy,
 						  "onHelpActivate": self.onHelpActivate,       
 						  "on_accept_dialog": self.on_accept_dialog,
+						  "on_btn_info_comenzar_clicked": self.on_btn_info_comenzar_clicked,
+						  "on_btn_info_cancel_clicked": self.on_btn_info_cancel_clicked,
 						  "on_btn_main_accept_clicked": self.on_btn_main_accept_clicked,            
 						  "on_btn_main_cancel_clicked": self.on_btn_main_cancel_clicked }
 
 		self.builder.connect_signals(self.handlers)
 		self.window = self.builder.get_object("window")
+		self.info_dialog = self.builder.get_object("info_dialog")
 		self.about_dialog = self.builder.get_object("about_dialog") 
 		self.entry_name = self.builder.get_object("entry_name")
 
@@ -48,11 +53,20 @@ class Handler:
 		self.about_dialog.hide()
 
 	def on_btn_main_accept_clicked(self,*args):
-		print "Se lanza el juego"
-		juego.nivel1()
+		Name = self.entry_name.get_text()
+		self.entry_name.set_text('')
+		self.info_dialog.show()
 
 	def on_btn_main_cancel_clicked(self,*args):
 		self.entry_name.set_text('')
+
+	def on_btn_info_comenzar_clicked(self,*args):
+		print "Se lanza el juego"
+		juego.nivel1()
+
+	def on_btn_info_cancel_clicked(self,*args):
+		self.info_dialog.hide()
+
 
 def main():
     window = Handler()
