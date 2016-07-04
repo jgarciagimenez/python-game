@@ -819,7 +819,7 @@ def gameover():
 				sys.exit()
 
 			if evento.key == pygame.K_RETURN:
-				nivel1()
+				nivel1(Name)
 
 def win():
 
