@@ -415,6 +415,7 @@ el tiempo se dentendra y podras pensar en tu siguiente jugada. Sin embargo, el c
                 <property name="label" translatable="yes">        TOP SCORES</property>
                 <property name="use_underline">True</property>
                 <signal name="activate" handler="on_top_score_activate" swapped="no"/>
+                <signal name="select" handler="on_top_score_activate" swapped="no"/>
               </object>
             </child>
           </object>

@@ -123,14 +123,14 @@ def nivel1(MyName):
 			Ventana.blit(Texto, (375, 200))
 			pygame.display.flip()
 			Texto2 = Fuente.render("Return to next level", True, (204,204,0))
-	  		Ventana.blit(Texto2, (320, 370))
-	  		pygame.display.flip()
+			Ventana.blit(Texto2, (320, 370))
+			pygame.display.flip()
 
 			now_ticks = pygame.time.get_ticks()
 			sec_passed = (now_ticks-start_ticks)/1000
 			Puntuacion += Puntuacion + (50-sec_passed)*100
 
-		  	lvl1to2()
+			lvl1to2()
 
 		for slime in Slimes:
 			Ventana.blit(slime.image,slime.rect)
@@ -325,8 +325,8 @@ def nivel2():
 		MiBoss.update(movimiento)
 
 		if MiBoss.CanAttack > 70:
-		 	MiBoss.CanAttack = 0
-		 	Boss_Attacks.append( boss_attack_1((MiBoss.x,MiBoss.y),Coordenadas))
+			MiBoss.CanAttack = 0
+			Boss_Attacks.append( boss_attack_1((MiBoss.x,MiBoss.y),Coordenadas))
 
 
 		for attack in Attacks:
@@ -341,6 +341,12 @@ def nivel2():
 					sec_passed = (now_ticks-start_ticks)/1000
 					Puntuacion += Puntuacion + (100-sec_passed)*100
 
+					## Redibujamos para que el boss desaparezca al morir
+					MiMonigotillo.update(Coordenadas,direccion,movimiento)
+					Ventana.blit(pygame.transform.scale(Fondo,(1400,720)),(0,0))
+					Ventana.blit(MiMonigotillo.image, MiMonigotillo.rect)
+					Ventana.blit(Corazon,(1280,15))
+
 					Fuente= pygame.font.Font(None, 100)
 					Texto = Fuente.render("Congratulations!", True, (204,204,0))
 					Ventana.blit(Texto, (375, 200))
@@ -351,11 +357,12 @@ def nivel2():
 					Ventana.blit(Texto2, (320, 370))
 					pygame.display.flip()
 
+
 					win()
 
 
-		 	if attack.x > 1400 or attack.x < 0 or attack.y > 720 or attack.x < 0:
-		 		Attacks.remove(attack)
+			if attack.x > 1400 or attack.x < 0 or attack.y > 720 or attack.x < 0:
+				Attacks.remove(attack)
 
 
 		for attack in Boss_Attacks:

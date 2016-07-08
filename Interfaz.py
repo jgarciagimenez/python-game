@@ -98,7 +98,7 @@ class Handler:
 
 		query = "SELECT * FROM Puntuaciones  ORDER BY Puntuacion DESC"
 		micursor.execute(query)
-		registros= micursor.fetchmany(size = 5)
+		registros= micursor.fetchmany(size = 4)
 		Conexion.commit()
 		a = 0
 		for registro in registros:
