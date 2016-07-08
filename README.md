@@ -9,6 +9,7 @@ en pasar el juego.
 
 El juego consta de dos niveles.
 
-Para lanzar el juego hay que ejecutar el programa Interfaz.py que implementa las funciones definidas en juego.py con 
-una interfaz grafica donde se explica un poco el juego
+Para lanzar el juego, primero hay que crear una base de datos de MySQL con las instrucciones del archivo createDatabase.
+A continuacion hay que ejecutar el programa Interfaz.py que implementa las funciones definidas en juego.py con 
+una interfaz grafica donde se explica un poco el juego.
 
