@@ -5,19 +5,19 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import juego
-import MySQLdb as db
+# import MySQLdb as db
 
 Name = None
 
 
-# Database 
-db_host = "localhost"
-db_user = "jose"
-db_pass = "juego"
-db_data = "DBjuego"
+# # Database 
+# db_host = "localhost"
+# db_user = "jose"
+# db_pass = "juego"
+# db_data = "DBjuego"
 
-Conexion = db.connect(db_host,db_user,db_pass,db_data)
-micursor = Conexion.cursor(db.cursors.DictCursor)
+# Conexion = db.connect(db_host,db_user,db_pass,db_data)
+# micursor = Conexion.cursor(db.cursors.DictCursor)
 
 
 
@@ -94,16 +94,16 @@ class Handler:
 
 
 	def on_top_score_activate(self,*args):
-		self.top_score.show()
+		# self.top_score.show()
 
-		query = "SELECT * FROM Puntuaciones  ORDER BY Puntuacion DESC"
-		micursor.execute(query)
-		registros= micursor.fetchmany(size = 4)
-		Conexion.commit()
-		a = 0
-		for registro in registros:
-			self.labels_top[a].set_text(registro['Nombre'] + ":  " + str(registro['Puntuacion']))
-			a+=1
+		# query = "SELECT * FROM Puntuaciones  ORDER BY Puntuacion DESC"
+		# micursor.execute(query)
+		# registros= micursor.fetchmany(size = 4)
+		# Conexion.commit()
+		# a = 0
+		# for registro in registros:
+		# 	self.labels_top[a].set_text(registro['Nombre'] + ":  " + str(registro['Puntuacion']))
+		# 	a+=1
 
 
 def main():

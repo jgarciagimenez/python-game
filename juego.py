@@ -9,17 +9,17 @@ import math
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-import MySQLdb as db
+# import MySQLdb as db
 from pygame.locals import *
 
-# Database 
-db_host = "localhost"
-db_user = "jose"
-db_pass = "juego"
-db_data = "DBjuego"
+# # Database 
+# db_host = "localhost"
+# db_user = "jose"
+# db_pass = "juego"
+# db_data = "DBjuego"
 
-Conexion = db.connect(db_host,db_user,db_pass,db_data)
-micursor = Conexion.cursor(db.cursors.DictCursor)
+# Conexion = db.connect(db_host,db_user,db_pass,db_data)
+# micursor = Conexion.cursor(db.cursors.DictCursor)
 
 
 Vidas = 3
@@ -885,13 +885,13 @@ def angulo_polares(a):
 
 def saveScore():
 
-	query = "SELECT MAX(id) FROM Puntuaciones;"
-	micursor.execute(query)
-	registro = micursor.fetchone()
-	Conexion.commit()
-	id_actual = registro['MAX(id)']
+	# query = "SELECT MAX(id) FROM Puntuaciones;"
+	# micursor.execute(query)
+	# registro = micursor.fetchone()
+	# Conexion.commit()
+	# id_actual = registro['MAX(id)']
 
-	query = "INSERT INTO Puntuaciones VALUES(" +str(id_actual+1)+",'"+Name+"',"+str(Puntuacion)+");"
-	micursor.execute(query)
-	Conexion.commit()
+	# query = "INSERT INTO Puntuaciones VALUES(" +str(id_actual+1)+",'"+Name+"',"+str(Puntuacion)+");"
+	# micursor.execute(query)
+	# Conexion.commit()
 
